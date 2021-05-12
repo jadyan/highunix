@@ -1,0 +1,92 @@
+Logfile: 2021年 03月 26日 星期五 09:21:36 CST
+-------------------------------------
+
+Output of "ls -al" command
+
+总用量 3484
+drwxrwxr-x 2 jadyan jadyan    4096 3月  26 09:21 .
+drwxrwxr-x 9 jadyan jadyan    4096 3月  24 10:36 ..
+-rwxrwxr-x 1 jadyan jadyan    1350 3月  12 14:54 03_background-loop.sh
+-rwxrwxr-x 1 jadyan jadyan     740 3月  17 10:34 03_ctrl_H.sh
+-rwxrwxr-x 1 jadyan jadyan    1410 3月  17 10:59 03_ctrl_M.sh
+-rwxrwxr-x 1 jadyan jadyan    2276 3月  17 10:23 03_dan_heng_gang.sh
+-rwxr-xr-x 1 jadyan jadyan    8290 3月   2 17:27 03_Special_characters.sh
+-rwxrwxr-x 1 jadyan jadyan    3387 3月  17 13:30 0401_variable_change.sh
+-rwxrwxr-x 1 jadyan jadyan    1508 3月  18 15:44 0402_variable_setvalue.sh
+-rwxrwxr-x 1 jadyan jadyan    2101 3月  18 16:00 0403_variable_int_or_str.sh
+-rwxrwxr-x 1 jadyan jadyan    1275 3月  18 16:25 0404_variable_spacial.sh
+-rwxrwxr-x 1 jadyan jadyan    1425 3月  18 16:33 0405_variable_para_check.sh
+-rwxrwxr-x 1 jadyan jadyan    1109 3月  18 16:36 0406_variable_whois.sh
+-rwxrwxr-x 1 jadyan jadyan    1022 3月  18 16:45 040702_variable_shift.sh
+-rwxrwxr-x 1 jadyan jadyan    1316 3月  18 16:42 0407_variable_shift.sh
+-rwxrwxr-x 1 jadyan jadyan    1042 3月  18 17:03 05_01_variable_use_para.sh
+-rwxrwxr-x 1 jadyan jadyan    1655 3月  18 17:13 05_02_variable_use_para.sh
+-rwxrwxr-x 1 jadyan jadyan    2682 3月  19 10:30 05_03_variable_Transferred_meaning.sh
+-rwxrwxr-x 1 jadyan jadyan    2260 3月  19 10:32 05_04_varialbe_input.sh
+-rwxrwxr-x 1 jadyan jadyan     858 3月  19 10:42 05_05_variable_Transferred_meaning2.sh
+-rwxrwxr-x 1 jadyan jadyan     953 3月  19 14:08 07_01_and_or.sh
+-rwxrwxr-x 1 jadyan jadyan    2025 3月  19 14:27 07_02_if.sh
+-rwxrwxr-x 1 jadyan jadyan    4116 3月  19 14:56 07_03_test_cmd.sh
+-rwxrwxr-x 1 jadyan jadyan    3404 3月  19 15:14 07_04_file_test.sh
+-rwxrwxr-x 1 jadyan jadyan    2970 3月  19 15:54 07_05_other_compare.sh
+-rwxrwxr-x 1 jadyan jadyan    1072 3月  19 15:52 07_06_zmore.sh
+-rwxrwxr-x 1 jadyan jadyan    1945 3月  19 16:42 08_01_greatest_common_divisor.sh
+-rwxrwxr-x 1 jadyan jadyan    1833 3月  19 17:03 08_02_operator.sh
+-rwxrwxr-x 1 jadyan jadyan    1507 3月  19 17:08 08_03_if_and_or.sh
+-rwxrwxr-x 1 jadyan jadyan    1792 3月  19 17:13 08_04_numeric_constants.sh
+-rwxrwxr-x 1 jadyan jadyan    1822 3月  19 17:25 08_05_brackets.sh
+-rwxrwxr-x 1 jadyan jadyan    5858 3月  22 17:59 10_01_string_handle.sh
+-rw-rw-r-- 1 jadyan jadyan      99 3月  22 13:56 10_01_string_handle.test
+-rwxrwxr-x 1 jadyan jadyan     758 3月  22 14:18 10_02_random_string.sh
+-rwxrwxr-x 1 jadyan jadyan     620 3月  22 17:42 10_03_02_change_format_suff.sh
+-rwxrwxr-x 1 jadyan jadyan    1517 3月  22 17:39 10_03_change_format_suff.sh
+-rwxrwxr-x 1 jadyan jadyan    1218 3月  23 09:02 10_04_awk.sh
+-rwxrwxr-x 1 jadyan jadyan    4275 3月  23 10:32 10_05_02_string_change.sh
+-rwxrwxr-x 1 jadyan jadyan    4330 3月  23 10:54 10_05_03_string_change.sh
+-rwxrwxr-x 1 jadyan jadyan    5106 3月  23 10:11 10_05_string_change.sh
+-rwxrwxr-x 1 jadyan jadyan    3624 3月  23 17:19 11_01_for.sh
+-rwxrwxr-x 1 jadyan jadyan     514 3月  23 17:44 11_02_02_while_read_file.sh
+-rwxrwxr-x 1 jadyan jadyan    1083 3月  23 17:35 11_02_02_while.sh
+-rwxrwxr-x 1 jadyan jadyan    1579 3月  23 17:29 11_02_while.sh
+-rwxrwxr-x 1 jadyan jadyan     795 3月  23 17:51 11_03_until.sh
+-rwxrwxr-x 1 jadyan jadyan     968 3月  24 09:15 11_04_for_inner.sh
+-rwxrwxr-x 1 jadyan jadyan    1025 3月  24 09:42 11_05_circle_control.sh
+-rwxrwxr-x 1 jadyan jadyan     759 3月  24 09:44 11_06_circle_break.sh
+-rwxrwxr-x 1 jadyan jadyan    1023 3月  24 09:46 11_07_circle_continue.sh
+-rwxrwxr-x 1 jadyan jadyan    1543 3月  24 09:51 11_08_case_select.sh
+-rwxrwxr-x 1 jadyan jadyan    1591 3月  24 09:54 11_09_case_use.sh
+-rwxrwxr-x 1 jadyan jadyan    2385 3月  24 10:02 11_10_case_zuse.sh
+-rwxrwxr-x 1 jadyan jadyan    1115 3月  24 10:20 12_command_change.sh
+-rwxrwxr-x 1 jadyan jadyan     962 3月  24 10:24 13_match.sh
+-rwxrwxr-x 1 jadyan jadyan    1454 3月  24 14:21 19_03_insert_file_cat.sh
+-rwxrwxr-x 1 jadyan jadyan    3784 3月  24 14:58 19_04_generate_script.sh
+-rwxrwxr-x 1 jadyan jadyan     713 3月  24 11:10 19_insert_file_ex.sh
+-rwxrwxr-x 1 jadyan jadyan    1411 3月  24 11:19 19_insert_file.sh
+-rwxrwxr-x 1 jadyan jadyan    1982 3月  26 09:21 20_exec.sh
+-rwxrwxr-x 1 jadyan jadyan    4208 3月  24 15:22 20_stdin_stdout_stderr.sh
+-rw-rw-r-- 1 jadyan jadyan      12 3月   2 17:22 combined_file
+-rw-rw-r-- 1 jadyan jadyan      13 3月  24 11:10 extest.txt
+-rwxr-xr-x 1 jadyan jadyan     373 3月  24 14:58 generated.sh
+-rw-rw-r-- 1 jadyan jadyan     119 3月  26 09:21 logfile.txt
+-rwxrwxr-x 1 jadyan jadyan    8360 3月  24 10:17 myctest
+-rw-rw-r-- 1 jadyan jadyan      80 3月  24 10:17 myctest.c
+-rwxrwxr-x 1 jadyan jadyan    1289 3月  22 17:51 my_getopt.sh
+-rw-rw-r-- 1 jadyan jadyan      11 3月  24 15:22 outfile
+-rw-rw-r-- 1 jadyan jadyan     147 3月  24 15:22 script.log
+-rwxrwxr-x 1 jadyan jadyan      62 3月  18 15:50 setchmod.sh
+-rw-rw-r-- 1 jadyan jadyan     449 3月   2 17:22 temp.test
+-rwxrw-rw- 1 jadyan jadyan 3230183 2月   8 16:10 高级Bash脚本编程指南（Advanced Bash-Scripting Guide）.pdf
+
+
+Output of "df" command
+
+文件系统                   1K-块     已用     可用 已用% 挂载点
+devtmpfs                 1913776        0  1913776    0% /dev
+tmpfs                    1930648        0  1930648    0% /dev/shm
+tmpfs                    1930648    12812  1917836    1% /run
+tmpfs                    1930648        0  1930648    0% /sys/fs/cgroup
+/dev/mapper/centos-root 52403200 44777476  7625724   86% /
+/dev/sda1                1038336   240848   797488   24% /boot
+/dev/mapper/centos-home 49119812 19294084 29825728   40% /home
+tmpfs                     386132       12   386120    1% /run/user/42
+tmpfs                     386132        0   386132    0% /run/user/1000
