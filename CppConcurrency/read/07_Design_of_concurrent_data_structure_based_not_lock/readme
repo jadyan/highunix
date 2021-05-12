@@ -1,0 +1,19 @@
+https://blog.csdn.net/yand789/article/details/27324295
+https://www.yuque.com/barret/snelnn/gmdywx
+
+https://yuanmacha.com/15328477.html
+https://blog.csdn.net/weixin_43376501/article/details/108325765
+
+
+https://github.com/kicsy/flying/tree/2a575b53630d846bc1169420966031144de8a101/src/core
+https://github.com/ashishsony/dev/tree/master/c%2B%2BConcurrencyInAction/CCiA_SourceCode
+https://github.com/subjam/concurrency-in-action/blob/master/ch7/queue_mpmc.cpp
+
+编译添加 -mcx16 
+	该选项将使GCC能够在生成的代码中使用CMPXCHG16B指令。CMPXCHG16B允许对128位双四字(或oword)数据类型进行原子操作。这对于可由多个处理器(或核心)更新的高分辨率计数器非常有用。该指令是作为原子内置函数的一部分生成的：有关详细信息，请参阅* note Atomic Builtins ::。
+
+
+
+第一种线程个数计数法虽然效率挺高，但是存在内存泄漏问题；
+第二种hazard-point方法效率也还可以，比第一种低一些，但是不存在内存泄漏问题。不过，这种算法已经被申请专利了，可能在使用时要注意一点；
+第三种引用计数方法，分为两种。第一种，智能指针方法，实现简单，且容易理解和维护，也不会出现内存泄漏问题，但是，最大的问题就是效率非常低，可能还不如直接使用锁来实现呢。效率低的原因是一般当前的智能指针的原子操作都是有锁的，并不是无锁实现，因此会造成大量的阻塞。假如某个平台上实现了无锁的智能指针的原子操作，那么使用智能指针效率就会相当的高。第二种是双引用计数方法，一般效率非常高，实测已经接近上面的第一种方法了，且不存在内存泄漏问题，也不存在专利问题。但是，这种方法实现复杂，且比较难以理解。此外，如果想更进一步提高其性能，加上内存序参数后，会变得更加难以理解，维护困难。此外，双引用计数法也需要要求硬件平台支持双字节比较并交换操作，否则这个实现效率也极其慢，与智能指针类似，所以这种情况下还不如直接使用智能指针的方式呢。比如你在counted_node_ptr结构体中随便再多加一个成员变量，你测试就会发现此时与使用智能指针一样的慢。因此，最后的这种方法很依赖于硬件平台是否支持双字节比较并交换操作。
