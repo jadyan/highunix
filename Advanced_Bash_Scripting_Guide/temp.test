@@ -1,8 +1,0 @@
-
-Archive Description:
-CPLUS_INCLUDE_PATH=/usr/local/boost/include
-LIBRARY_PATH=/usr/local/boost/lib
-LD_LIBRARY_PATH=.:/usr/local/boost/lib
-PATH=/usr/local/java/jdk1.8.0_251/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/python3/bin:/usr/local/python3/lib/python3.7/site-packages/airflow/bin:/home/jadyan/.local/bin:/home/jadyan/bin
-CLASSPATH=.:/usr/local/java/jdk1.8.0_251/lib/dt.jar:/usr/local/java/jdk1.8.0_251/lib/tools.jar
-end

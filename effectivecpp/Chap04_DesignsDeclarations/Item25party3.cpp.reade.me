@@ -1,0 +1,81 @@
+#include <iostream>
+
+#include <algorithm>
+namespace WidgetStuff
+{
+template<typename T>
+	class WidgetImpl
+	{
+	public:
+		WidgetImpl(int x, int y, int z) :
+		a(x), b(y), c(z)
+		{
+		}
+		void show()
+		{
+			std::cout<<"a="<<a<<"b="<<b<<"c="<<c<<std::endl;
+		}
+	private:
+		int a, b, c;
+	};
+
+
+	template<typename T>
+	class Widget
+	{
+	public:
+		Widget(WidgetImpl<T>* wi) : pImpl(wi) {}
+		void swap(Widget& other)
+		{
+			using std::swap;
+			swap(pImpl, other.pImpl);
+		}
+
+		void show()
+		{
+			(*pImpl).show();		
+		}
+	private:
+		WidgetImpl<T>* pImpl;
+	};
+
+
+	namespace std
+	{
+		// error C2768: 'std::swap' : illegal use of explicit template arguments
+		// this code should not compile although some compilers erroneously accept it
+
+		/*
+			它是非法的。试图部分特化（partially specialize）一个函数模板（std::swap），
+			但是尽管 C++ 允许类模板的部分特化（partial specialization），
+			但不允许函数模板这样做。这样的代码不能编译（尽管一些编译器错误地接受了它）
+		*/
+		// template<typename T>
+		// void swap<Widget<T> >(Widget<T>& a, Widget<T>& b)
+		// {
+		// 	a.swap(b);
+		// }
+
+		template<typename T>
+		void swap(Widget<T>& a, Widget<T>& b)
+		{
+			a.swap(b);
+		}
+
+	}
+}
+
+
+
+
+int main()
+{
+	WidgetStuff::WidgetImpl<int> wi1(1, 2, 3);
+	WidgetStuff::WidgetImpl<int> wi2(2, 4, 6);
+
+	WidgetStuff::Widget<int> w1(&wi1);
+	WidgetStuff::Widget<int> w2(&wi2);
+
+	std::swap(w1, w2);
+	return 0;
+}
