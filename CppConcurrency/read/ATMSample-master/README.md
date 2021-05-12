@@ -1,2 +1,0 @@
-# ATMSample
-ATM Sample

@@ -1,1 +1,0 @@
-/home/jadyan/code/book/CppConcurrency/fromgit/MultiThreadingCpp11-master/9/9_6/bld/CMakeFiles/9_6.dir
