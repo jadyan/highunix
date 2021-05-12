@@ -1,0 +1,74 @@
+#gcc   fork1.c  -L ../lib -lapue -I ../common -o fork1
+
+CC=gcc
+
+CFLG=-g -c -I$(INC)
+
+LIBPATH = ../lib
+LIB = -lapue
+
+INC = ../common
+
+SRC = fork1.c  \
+	  fork2.c  \
+	  vfork1.c \
+      wait1.c  \
+	  tellwait1.c \
+	  tellwait2.c \
+	  echoall.c   \
+	  exec1.c 
+
+#SRC = $(wildcard *.c)
+
+OBJ = fork1.o  \
+	  fork2.o  \
+	  vfork1.o \
+	  wait1.o  \
+	  tellwait1.o \
+	  tellwait2.o \
+	  echoall.o   \
+	  exec1.o
+
+#OBJ = $(wildcard *.o)
+
+
+APID = $(patsubst %.c,%,$(wildcard *.c))
+
+.PHONY:clean
+#.SUFFIXES:.cpp .o
+
+
+all:$(OBJ) 
+	@echo "doo< = $<"
+	@echo "doo^ = $^"
+	@echo "doo@ = $@"
+	@echo "make .. $(APID)"
+	${CC}  fork1.o -L${LIBPATH}  ${LIB}  -o fork1
+	${CC}  fork2.o -L${LIBPATH}  ${LIB}  -o fork2
+	${CC}  vfork1.o -L${LIBPATH}  ${LIB}  -o vfork1
+	${CC}  wait1.o -L${LIBPATH}  ${LIB}  -o wait1
+	${CC}  tellwait1.o -L${LIBPATH}  ${LIB}  -o tellwait1
+	${CC}  tellwait2.o -L${LIBPATH}  ${LIB}  -o tellwait2
+	${CC}  echoall.o -L${LIBPATH}  ${LIB}  -o  echoall
+	${CC}  exec1.o -L${LIBPATH}  ${LIB}  -o exec1
+	echo "-"
+	${CC}  $^.o -L${LIBPATH}  ${LIB}  -o $^
+	@rm -rf *.o
+	@echo "done"
+
+%.o:%.c
+	${CC} ${CFLG}  ${SRC}
+
+clean:
+	@rm -rf *.o fork1  fork2 vfork1 $(APID)
+
+##########################################################################
+objects := $(wildcard *.c)
+#objects := $(wildcard *.h)
+show:
+	@echo $(objects)
+	@echo "****************************************************************************************"
+	@echo $(patsubst %.c,%.o,$(wildcard *.c))
+	@echo $(patsubst %.c,%,$(wildcard *.c))
+	@echo "****************************************************************************************"
+

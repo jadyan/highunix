@@ -1,0 +1,201 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#define BACKLOG 5
+#define MAXCLIENT 50
+#define MAX_BUFFER_SIZE 1024
+
+int srvfd = -1;
+int clientfds[MAXCLIENT];
+
+int addClient(int fd)
+{
+    int i;
+    for (i=0; i<MAXCLIENT; i++)
+    {
+        if (clientfds[i] == -1)
+        {
+            clientfds[i] = fd;
+            break;
+        }
+    }
+    return i;
+}
+
+int main(int argc, char *argv[])
+{
+    int port;
+    int reused = 1;
+    struct sockaddr_in srvaddr;
+    
+    if (argc != 2)
+    {
+        fprintf(stderr, "%s port\n", argv[0]);
+        return -1;
+    }
+    port = atoi(argv[1]);
+    if (port <= 0 || port >= 65535)
+    {
+        fprintf(stderr, "[%s] is not a valid port\n", argv[1]);
+        return -1;
+    }
+    
+    /*
+    *    AF_INET：Ipv4网络协议； AF_INET6 pv6网络协议；
+    
+    *   SOCK_STREAM： 提供面向连接的稳定数据传输，即TCP协议。
+        OOB： 在所有数据传送前必须使用connect()来建立连接状态。
+        SOCK_DGRAM： 使用不连续不可靠的数据包连接。
+        SOCK_SEQPACKET： 提供连续可靠的数据包连接。
+        SOCK_RAW： 提供原始网络协议存取。
+        SOCK_RDM： 提供可靠的数据包连接。
+        SOCK_PACKET： 与网络驱动程序直接通信
+        
+        IPPROTO_TCP 和 IPPROTO_IP代表两种不同的协议,分别代表IP协议族里面的TCP协议和IP协议
+        IPPROTO_TCP: TCP协议
+        IPPROTO_IP : IP协议
+        socket(AF_INET,SOCK_STREAM, IPPROTO_TCP)
+    **/
+    if ((srvfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1)
+    {
+        perror("socket");
+        return -2;
+    }
+    /*
+        如果你的服务程序停止后想立即重启，而新套接字依旧使用同一端口，此时 SO_REUSEADDR 选项非常有用。必须意识到，此时任何非期望数据到达，都可能导致服务程序反应混乱
+        
+    *sockfd：标识一个套接口的描述字。
+    level：选项定义的层次；支持SOL_SOCKET、IPPROTO_TCP、IPPROTO_IP和IPPROTO_IPV6。 如果想要在套接字级别上设置选项，就必须把level设置为 SOL_SOCKET
+    *optname：需设置的选项。
+        SO_REUSEADDR，打开或关闭地址复用功能。当option_value不等于0时，打开调试信息，否则，关闭调试信息。它实际所做的工作是在sock->sk->sk_flag中置 SOCK_DBG(第10)位，或清SOCK_DBG位。
+        SO_DONTROUTE，打开或关闭路由查找功能. 当option_value不等于0时，打开，否则，关闭。它实际所做的工作是在sock->sk->sk_flag中置或清 SOCK_LOCALROUTE位。
+    *   SO_BROADCAST，允许或禁止发送广播数据。当option_value不等于0时，允许，否则，禁止。它实际所做的工作是在sock->sk->sk_flag中置或清 SOCK_BROADCAST位。
+        SO_SNDBUF，设置发送缓冲区的大小。     发送缓冲区的大小是有上下限的，其上限为256 * (sizeof(struct sk_buff) + 256)，下限为2048字节。该操作将sock->sk->sk_sndbuf设置为val * 2，之所以要乘以2，是防
+                                              止大数据量的发送，突然导致缓冲区溢出。最后，该操作完成后，因为对发送缓冲的大小 作了改变，要检查sleep队列，如果有进程正在等待写，将它们唤醒
+        SO_RCVBUF，   设置接收缓冲区的大小。  接收缓冲区大小的上下限分别是：256 * (sizeof(struct sk_buff) + 256)和256字节。该操作将sock->sk->sk_rcvbuf设置为val * 2。opt
+    optval：指针，指向存放选项待设置的新值的缓冲区。
+    optlen：optval缓冲区长度。
+    *
+    */
+
+    if (setsockopt(srvfd, SOL_SOCKET, SO_REUSEADDR, &reused, sizeof(reused)) == -1) {
+        perror("setsockopt");
+        return -2;
+    }
+
+
+    memset(&srvaddr, 0, sizeof(srvaddr));
+    srvaddr.sin_family = AF_INET;
+    srvaddr.sin_port = htons(port);
+    srvaddr.sin_addr.s_addr = INADDR_ANY;
+    if (bind(srvfd, (struct sockaddr *)&srvaddr, sizeof(srvaddr))== -1){
+        perror("bind");
+        return -2;
+    }
+    /*
+        进程处理一个一个连接请求的时候，可能还存在其它的连接请求。因为TCP连接是一个过程，所以可能存在一种半连接的状态，
+        有时由于同时尝试连接的用户过多，使得服务器进程无法快速地完成连接请求。如果这个情况出现了，服务器进程希望内核如何处理呢？
+        内核会在自己的进程空间里维护一个队列以跟踪这些完成的连接但服务器进程还没有接手处理或正在进行的连接，
+        这样的一个队列内核不可能让其任意大，所以必须有一个大小的上限。这个backlog告诉内核使用这个数值作为上限。
+        毫无疑问，服务器进程不能随便指定一个数值，内核有一个许可的范围。这个范围是实现相关的。很难有某种统一，一般这个值会小30以内
+    */
+    if (listen(srvfd, BACKLOG) == -1){
+        perror("listen");
+        return -2;
+    }
+    
+    memset(clientfds, -1, sizeof(clientfds));
+    while(1){
+        int maxfd, i, count;
+        fd_set fds;
+        struct timeval tv = {10, 0};
+
+        FD_ZERO(&fds);
+        FD_SET(srvfd, &fds);
+        maxfd = srvfd;
+        for (i = 0; i < MAXCLIENT; i++)
+        {
+            if (clientfds[i] != -1)
+            {
+                FD_SET(clientfds[i], &fds);
+                if (maxfd < clientfds[i]) maxfd = clientfds[i];
+            }
+        }
+
+        if ((count = select(maxfd+1, &fds, NULL, NULL, &tv)) == -1)
+        {
+            perror("select");
+            return -2;
+        } 
+        else if (count == 0)
+        {
+            printf("select timeout.\n");
+            continue;
+        }
+        if (FD_ISSET(srvfd, &fds))
+        {
+            struct sockaddr_in clientaddr;
+            socklen_t clientaddr_len = sizeof(clientaddr);
+            int newfd = accept(srvfd, (struct sockaddr *)&clientaddr, &clientaddr_len);
+            
+            if (addClient(newfd) < MAXCLIENT)
+            {
+                printf("%s:%hu connected.accept.\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+                count--;
+		printf("1count=%d\n", count);   
+            }
+            else
+            {
+                printf("%s:%hu connected.refused.\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+                close(newfd);
+            }
+        }
+	
+	printf("2count=%d\n", count);
+        if (count > 0)
+        {
+            for (i = 0; i < MAXCLIENT; i++)
+            {
+                if (clientfds[i] != -1 && FD_ISSET(clientfds[i], &fds))
+                {
+                    char buffer[MAX_BUFFER_SIZE] = {0};
+                    int recvCount = recv(clientfds[i], buffer, sizeof(buffer), 0);
+                    if (recvCount == -1)
+                    {
+                        perror("recv");
+                        close(clientfds[i]);
+                        clientfds[i] = -1;
+                    }
+                    else if (recvCount == 0)
+                    {
+                        printf("client closed.\n");
+                        close(clientfds[i]);
+                        clientfds[i] = -1;
+                    }
+                    else
+                    {
+                        printf("recv: %s", buffer);
+                        fflush(stdout);
+                        if (buffer[strlen(buffer)-1] == '\n') buffer[strlen(buffer)-1] = '\0';
+                        if (buffer[strlen(buffer)-1] == '\r') buffer[strlen(buffer)-1] = '\0';
+                        strcat(buffer, " anOK\n");
+                        if (send(clientfds[i], buffer, strlen(buffer), 0) == -1)
+                        {
+                            perror("send");
+                            close(clientfds[i]);
+                            clientfds[i] = -1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+

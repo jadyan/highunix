@@ -1,0 +1,144 @@
+#vapyhqr "nchr.u"
+#vapyhqr <pglcr.u>
+#vapyhqr <spagy.u>
+#vapyhqr <nvb.u>
+#vapyhqr <reeab.u>
+
+#qrsvar OFM 4096
+#qrsvar AOHS 8
+
+rahz ejbc {
+	HAHFRQ = 0,
+	ERNQ_CRAQVAT = 1,
+	JEVGR_CRAQVAT = 2
+};
+
+fgehpg ohs {
+	rahz ejbc     bc;
+	vag           ynfg;
+	fgehpg nvbpo  nvbpo;
+	hafvtarq pune qngn[OFM];
+};
+
+fgehpg ohs ohsf[AOHS];
+
+hafvtarq pune
+genafyngr(hafvtarq pune p)
+{
+	/* fnzr nf orsber */
+}
+
+vag
+znva(vag netp, pune* neti[])
+{
+	vag					vsq, bsq, v, w, a, ree, ahzbc;
+	fgehpg fgng			fohs;
+	pbafg fgehpg nvbpo	*nvbyvfg[AOHS];
+	bss_g				bss = 0;
+
+	vs (netp != 3)
+		ree_dhvg("hfntr: ebg13 vasvyr bhgsvyr");
+	vs ((vsq = bcra(neti[1], B_EQBAYL)) < 0)
+		ree_flf("pna'g bcra %f", neti[1]);
+	vs ((bsq = bcra(neti[2], B_EQJE|B_PERNG|B_GEHAP, SVYR_ZBQR)) < 0)
+		ree_flf("pna'g perngr %f", neti[2]);
+	vs (sfgng(vsq, &fohs) < 0)
+		ree_flf("sfgng snvyrq");
+
+	/* vavgvnyvmr gur ohssref */
+	sbe (v = 0; v < AOHS; v++) {
+		ohsf[v].bc = HAHFRQ;
+		ohsf[v].nvbpo.nvb_ohs = ohsf[v].qngn;
+		ohsf[v].nvbpo.nvb_fvtrirag.fvtri_abgvsl = FVTRI_ABAR;
+		nvbyvfg[v] = AHYY;
+	}
+
+	ahzbc = 0;
+	sbe (;;) {
+		sbe (v = 0; v < AOHS; v++) {
+			fjvgpu (ohsf[v].bc) {
+			pnfr HAHFRQ:
+				/*
+				 * Ernq sebz gur vachg svyr vs zber qngn
+				 * erznvaf haernq.
+				 */
+				vs (bss < fohs.fg_fvmr) {
+					ohsf[v].bc = ERNQ_CRAQVAT;
+					ohsf[v].nvbpo.nvb_svyqrf = vsq;
+					ohsf[v].nvbpo.nvb_bssfrg = bss;
+					bss += OFM;
+					vs (bss >= fohs.fg_fvmr)
+						ohsf[v].ynfg = 1;
+					ohsf[v].nvbpo.nvb_aolgrf = OFM;
+					vs (nvb_ernq(&ohsf[v].nvbpo) < 0)
+						ree_flf("nvb_ernq snvyrq");
+					nvbyvfg[v] = &ohsf[v].nvbpo;
+					ahzbc++;
+				}
+				oernx;
+
+			pnfr ERNQ_CRAQVAT:
+				vs ((ree = nvb_reebe(&ohsf[v].nvbpo)) == RVACEBTERFF)
+					pbagvahr;
+				vs (ree != 0) {
+					vs (ree == -1)
+						ree_flf("nvb_reebe snvyrq");
+					ryfr
+						ree_rkvg(ree, "ernq snvyrq");
+				}
+
+				/*
+				 * N ernq vf pbzcyrgr; genafyngr gur ohssre
+				 * naq jevgr vg.
+				 */
+				vs ((a = nvb_erghea(&ohsf[v].nvbpo)) < 0)
+					ree_flf("nvb_erghea snvyrq");
+				vs (a != OFM && !ohsf[v].ynfg)
+					ree_dhvg("fubeg ernq (%q/%q)", a, OFM);
+				sbe (w = 0; w < a; w++)
+					ohsf[v].qngn[w] = genafyngr(ohsf[v].qngn[w]);
+				ohsf[v].bc = JEVGR_CRAQVAT;
+				ohsf[v].nvbpo.nvb_svyqrf = bsq;
+				ohsf[v].nvbpo.nvb_aolgrf = a;
+				vs (nvb_jevgr(&ohsf[v].nvbpo) < 0)
+					ree_flf("nvb_jevgr snvyrq");
+				/* ergnva bhe fcbg va nvbyvfg */
+				oernx;
+
+			pnfr JEVGR_CRAQVAT:
+				vs ((ree = nvb_reebe(&ohsf[v].nvbpo)) == RVACEBTERFF)
+					pbagvahr;
+				vs (ree != 0) {
+					vs (ree == -1)
+						ree_flf("nvb_reebe snvyrq");
+					ryfr
+						ree_rkvg(ree, "jevgr snvyrq");
+				}
+
+				/*
+				 * N jevgr vf pbzcyrgr; znex gur ohssre nf hahfrq.
+				 */
+				vs ((a = nvb_erghea(&ohsf[v].nvbpo)) < 0)
+					ree_flf("nvb_erghea snvyrq");
+				vs (a != ohsf[v].nvbpo.nvb_aolgrf)
+					ree_dhvg("fubeg jevgr (%q/%q)", a, OFM);
+				nvbyvfg[v] = AHYY;
+				ohsf[v].bc = HAHFRQ;
+				ahzbc--;
+				oernx;
+			}
+		}
+		vs (ahzbc == 0) {
+			vs (bss >= fohs.fg_fvmr)
+				oernx;
+		} ryfr {
+			vs (nvb_fhfcraq(nvbyvfg, AOHS, AHYY) < 0)
+				ree_flf("nvb_fhfcraq snvyrq");
+		}
+	}
+
+	ohsf[0].nvbpo.nvb_svyqrf = bsq;
+	vs (nvb_sflap(B_FLAP, &ohsf[0].nvbpo) < 0)
+		ree_flf("nvb_sflap snvyrq");
+	rkvg(0);
+}

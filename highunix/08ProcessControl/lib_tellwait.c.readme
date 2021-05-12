@@ -1,0 +1,105 @@
+#include "apue.h"
+
+//page 198
+/*
+	#include <signal.h>
+	//int sigprocmask( int how, const sigset_t *restrict set, sigset_t *restrict oset );
+	//返回值：若成功则返回0，若出错则返回-1
+	//一个进程的信号屏蔽字规定了当前阻塞而不能递送给该进程的信号集。调用函数sigprocmask可以检测或更改其信号屏蔽字，或者在一个步骤中同时执行这两个操作。
+
+static volatile sig_atomic_t sigflag; /* set nonzero by sig handler */
+static sigset_t newmask, oldmask, zeromask;
+
+static void
+sig_usr(int signo)	/* one signal handler for SIGUSR1 and SIGUSR2 */
+{
+	sigflag = 1;
+}
+
+void
+TELL_WAIT(void)
+{
+	/*
+		//SIGUSR1 用户自定义信号 默认处理：进程终止
+		//SIGUSR2 用户自定义信号 默认处理：进程终止
+	*/
+	/*
+		void (*signal(int sig, void (*func)(int)))(int) 设置一个函数来处理信号，即带有 sig 参数的信号处理程序。
+	*/
+	if (signal(SIGUSR1, sig_usr) == SIG_ERR)
+	{
+		err_sys("signal(SIGUSR1) error");
+	}
+	if (signal(SIGUSR2, sig_usr) == SIG_ERR)
+	{
+		err_sys("signal(SIGUSR2) error");
+	}
+	sigemptyset(&zeromask);  //sigemptyset()用来将参数set信号集初始化并清空。
+	sigemptyset(&newmask);
+	
+	/*
+		sigaddset()用来将参数signum 代表的信号加入至参数set 信号集里
+		表头文件 #include<signal.h>
+		//定义函数 int sigaddset(sigset_t *set,int signum);
+	*/
+	sigaddset(&newmask, SIGUSR1);
+	sigaddset(&newmask, SIGUSR2);
+
+	/* Block SIGUSR1 and SIGUSR2, and save current signal mask */
+	/*
+		  //SIG_BLOCK	  该进程新的信号屏蔽字是其当前信号屏蔽字和set指向信号集的并集。set包含了我们希望阻塞的附加信号
+  		  //SIG_UNBLOCK	  该进程新的信号屏蔽字是其当前信号屏蔽字和set所指向信号集补集的交集。set包含了我希望解除阻塞的信号
+          //SIG_SETMASK	  该进程新的信号屏蔽字将被set指向的信号集的值代替
+	*/
+	if (sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
+	{
+		err_sys("SIG_BLOCK error");
+	}
+}
+
+void
+TELL_PARENT(pid_t pid)
+{
+	kill(pid, SIGUSR2);		/* tell parent we're done */
+}
+
+void
+WAIT_PARENT(void)
+{
+	while (sigflag == 0)
+	{
+		/*
+			#include <signal.h>
+			int sigsuspend(const sigset_t *mask);
+			进程执行到sigsuspend时，sigsuspend并不会立刻返回，进程处于TASK_INTERRUPTIBLE状态并立刻放弃CPU，等待UNBLOCK（mask之外的）信号的唤醒。
+			进程在接收到UNBLOCK（mask之外）信号后，调用处理函数，然后还原信号集，sigsuspend返回，进程恢复执行。
+		*/
+		sigsuspend(&zeromask);	/* and wait for parent */
+	}		
+	sigflag = 0;
+
+	/* Reset signal mask to original value */
+	if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
+	{
+		err_sys("SIG_SETMASK error");
+	}
+}
+
+void
+TELL_CHILD(pid_t pid)
+{
+	//向进程或进程组发送一个信号 （成功返回 0； 否则，返回 -1 ）
+	kill(pid, SIGUSR1);			/* tell child we're done */
+}
+
+void
+WAIT_CHILD(void)
+{
+	while (sigflag == 0)
+		sigsuspend(&zeromask);	/* and wait for child */
+	sigflag = 0;
+
+	/* Reset signal mask to original value */
+	if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
+		err_sys("SIG_SETMASK error");
+}

@@ -1,0 +1,13 @@
+在/etc/services 中追加
+ruptime         5444/tcp
+ruptime         5444/udp
+
+./ruptimed-fd_service 
+或者
+./ruptimed_server
+
+
+
+client:
+./ruptime_client 主机名
+./ruptime_client localhost

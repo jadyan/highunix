@@ -1,0 +1,2 @@
+./nonblockw< /etc/services > temp.file　
+./nonblockw< /etc/services  2>stderr.out　

@@ -1,0 +1,9 @@
+#!/usr/bin/awk -f  
+#用awk -f 来执行这个文件
+#必须加上 -f  其实他等价于/bin/awk -f /usr/local/bin/awkexample file1 FILENAME2 f3 相当于说明这是awk 程序的一个文件
+#不加 -f 会报错
+BEGIN {
+	for (i = 0; i < ARGC; i++)
+		printf "ARGV[%d] = %s\n", i, ARGV[i]
+	exit
+}

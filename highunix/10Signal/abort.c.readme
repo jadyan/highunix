@@ -1,0 +1,44 @@
+/*
+此函数将SIGABRT信号发送给调用进程（进程不应忽略此信号）。ISO C规定，调用abort将向主机环境递送一个未成功终止的通知，其方法是调用raise(SIGABRT)函数。
+
+ISO C要求若捕捉到此信号而且相应信号处理程序返回，abort仍不会返回到其调用者。如果捕捉到此信号，则信号处理程序不能返回的唯一方法是它调用exit、_exit、_Exit、longjmp或siglongjmp（10.15节讨论了longjmp和siglongjmp之间的区别）。POSIX.1也说明abort并不理会进程对此信号的阻塞和忽略。
+
+让进程捕捉 SIGABRT 的意图是：在进程终止之前由其执行所需的清理操作。如果进程并不在信号处理程序中终止自己，POSIX.1声明当信号处理程序返回时，abort终止该进程。
+
+ISO C针对此函数的规范将下列问题留由实现决定：是否要冲洗输出流以及是否要删除临时文件（见5.13节）。 POSIX.1的要求则更进一步，它要求如果abort调用终止进程，则它对所有打开标准I/O流的效果应当与进程终止前对每个流调用fclose相同。
+*/
+
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+void
+abort(void)			/* POSIX-style abort() function */
+{
+	sigset_t			mask;
+	struct sigaction	action;
+
+	/* Caller can't ignore SIGABRT, if so reset to default */
+	sigaction(SIGABRT, NULL, &action);
+	if (action.sa_handler == SIG_IGN) {
+		action.sa_handler = SIG_DFL;
+		sigaction(SIGABRT, &action, NULL);
+	}
+	if (action.sa_handler == SIG_DFL)
+		fflush(NULL);			/* flush all open stdio streams */
+
+	/* Caller can't block SIGABRT; make sure it's unblocked */
+	sigfillset(&mask);
+	sigdelset(&mask, SIGABRT);	/* mask has only SIGABRT turned off */
+	sigprocmask(SIG_SETMASK, &mask, NULL);
+	kill(getpid(), SIGABRT);	/* send the signal */
+
+	/* If we're here, process caught SIGABRT and returned */
+	fflush(NULL);				/* flush all open stdio streams */
+	action.sa_handler = SIG_DFL;
+	sigaction(SIGABRT, &action, NULL);	/* reset to default */
+	sigprocmask(SIG_SETMASK, &mask, NULL);	/* just in case ... */
+	kill(getpid(), SIGABRT);				/* and one more time */
+	exit(1);	/* this should never be executed ... */
+}

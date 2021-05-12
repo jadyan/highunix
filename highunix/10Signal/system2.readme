@@ -1,0 +1,13 @@
+$ ./a.out
+a　　　　　　　　 将正文追加至编辑器缓冲区
+hello, world
+.　　　　　　　　 行首的点停止追加方式
+1,$p　　　　　　　打印缓冲区中的第一行至最后一行，以便观察其内容
+hello, world
+w temp.foo　　　　将缓冲区写至一文件
+13　　　　　　　　编辑器称写了13个字节
+^C　　　　　　　　键入中断符
+?　　　　　　　　 编辑器捕捉信号，打印问号
+caught SIGINT　　 父进程执行同一操作
+q　　　　　　　　 离开编辑器
+caught SIGCHLD
